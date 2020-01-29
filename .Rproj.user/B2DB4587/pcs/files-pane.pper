@@ -1,0 +1,9 @@
+{
+    "path" : "~/R/ct_home_sale_pricing",
+    "sortOrder" : [
+        {
+            "ascending" : true,
+            "columnIndex" : 2
+        }
+    ]
+}
