@@ -35,6 +35,8 @@ library(skimr)
 # Visualization Aids
 library(ggridges)
 
+# Model Interpretation
+library(lime)
 
 # Read Data ---------------------------------------------------------------
 
@@ -513,7 +515,7 @@ xgb_preproc_recipe <- recipes::recipe(
   logLastSoldPrice ~ 
     city + 
     bathrooms + 
-    bedrooms + 
+    # bedrooms + 
     finishedSqFt + 
     yearBuilt + 
     cpipctchange + 
@@ -539,26 +541,17 @@ xgb_modl <- parsnip::boost_tree(
   parsnip::fit(logLastSoldPrice ~ ., 
                data = xgb_modl_data_preproc_train)
 
-# glmnet_modl <- parsnip::linear_reg(
-#   mode = "regression" 
-# ) %>% 
-#   parsnip::set_engine("glmnet") %>% 
-#   parsnip::fit(logsaleamount ~ ., 
-#                data = modl_data_preproc_train)
 
 xgb_preds <- parsnip::predict.model_fit(
   object = xgb_modl, 
   new_data = xgb_modl_data_preproc_test
 )
 
-# glmnet_preds <- parsnip::predict.model_fit(object = glmnet_modl, 
-#                                            new_data = modl_data_preproc_test)
-
 xgb_results <- xgb_modl_data_preproc_test %>% 
   dplyr::bind_cols(xgb_preds)
 
 yardstick::mae(
-  results2, 
+  xgb_results, 
   truth = exp(logLastSoldPrice), 
   estimate = exp(.pred)
 )
@@ -582,8 +575,8 @@ agg_results <- lm_preds %>%
   dplyr::mutate(lm_xgb_pred = (lm_pred + xgb_pred) / 2) %>% 
   dplyr::select(mean_pred, lm_xgb_pred) %>% 
   dplyr::bind_cols(actuals)
-  
-  
+
+
 # Model Comparison --------------------------------------------------------
 
 # lm
@@ -622,5 +615,108 @@ yardstick::mae(
 )
 
 
+# Final Models ------------------------------------------------------------
+
+# lm_final
+lm_preproc_recipe_fnl <- recipes::recipe(
+  logLastSoldPrice ~ 
+    city + 
+    bathrooms + 
+    # bedrooms + 
+    finishedSqFt + 
+    yearBuilt + 
+    cpipctchange + 
+    season, 
+  data = modl_data_fnl
+) %>% 
+  recipes::step_string2factor(recipes::all_nominal()) %>% 
+  # recipes::step_rm(model) %>% 
+  recipes::prep()
 
 
+lm_modl_data_preproc_full <- recipes::bake(lm_preproc_recipe_fnl, 
+                                           modl_data_fnl)
+
+
+lm_modl_fnl <- parsnip::linear_reg(
+  mode = "regression"
+) %>% 
+  parsnip::set_engine("lm") %>%
+  parsnip::fit(logLastSoldPrice ~ ., 
+               data = lm_modl_data_preproc_full)
+
+yardstick::mae(
+  data.frame(truth = modl_data_fnl$logLastSoldPrice, 
+             estimate = lm_modl_fnl$fit$fitted.values), 
+  truth = exp(truth), 
+  estimate = exp(estimate)
+)
+
+
+# xgb_final
+xgb_preproc_recipe_fnl <- recipes::recipe(
+  logLastSoldPrice ~ 
+    city + 
+    bathrooms + 
+    bedrooms + 
+    finishedSqFt + 
+    yearBuilt + 
+    cpipctchange + 
+    season, 
+  data = modl_data_fnl
+) %>% 
+  recipes::step_string2factor(recipes::all_nominal()) %>% 
+  # recipes::step_rm(model) %>% 
+  recipes::prep()
+
+xgb_modl_data_preproc_full <- recipes::bake(xgb_preproc_recipe, 
+                                            modl_data_fnl)
+
+
+xgb_modl_fnl <- parsnip::boost_tree(
+  mode = "regression", 
+  trees = 1000
+) %>% 
+  parsnip::set_engine("xgboost", 
+                      objective = "reg:squarederror") %>% 
+  parsnip::fit(logLastSoldPrice ~ ., 
+               data = xgb_modl_data_preproc_full)
+
+
+
+# Model Explanations ------------------------------------------------------
+
+lm_explainer <- lime::lime(
+  lm_modl_data_preproc_train %>% 
+    dplyr::select(-logLastSoldPrice), 
+  lm_modl
+)
+
+lm_explanation <- lime::explain(
+  lm_modl_data_preproc_test[1, ] %>% 
+    dplyr::select(-logLastSoldPrice), 
+  lm_explainer, 
+  n_features = 4
+) %>% 
+  dplyr::mutate(prediction = round(exp(prediction), 0))
+
+p1 <- lime::plot_features(lm_explanation)
+p1
+
+#xgb
+
+xgb_explainer <- lime::lime(
+  xgb_modl_data_preproc_train %>% 
+    dplyr::select(-logLastSoldPrice), 
+  xgb_modl
+)
+
+xgb_explanation <- lime::explain(
+  xgb_modl_data_preproc_test[1:4, ] %>% 
+    dplyr::select(-logLastSoldPrice), 
+  xgb_explainer, 
+  n_features = 4
+) %>% 
+  dplyr::mutate(prediction = round(exp(prediction), 0))
+
+lime::plot_features(xgb_explanation)
