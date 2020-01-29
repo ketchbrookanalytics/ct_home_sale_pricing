@@ -2,6 +2,7 @@
 
 library(shiny)
 library(shinydashboard)
+library(shinyWidgets)
 library(tidyverse)
 library(glue)
 
@@ -30,9 +31,19 @@ cpi_data <- macro.env$CPIAUCSL %>%
 # Build App ---------------------------------------------------------------
 
 ui <- fluidPage(
+  
+  shinyWidgets::setBackgroundColor(
+    color = c("#F7FBFF", 
+              "#2171B5"), 
+    gradient = "linear", 
+    direction = c("bottom")
+  ), 
+  
   title = "Home Sale Price Estimator for Tolland County, Connecticut", 
   
-  shiny::HTML("<div id=\"ketchbrook_banner\" class=\"shiny-image-output\" style=\"width: 100% ; height: 150px\"></div>"), 
+  # shiny::HTML("<a href=\"https://www.ketchbrookanalytics.com\"><img border=\"0\" alt=\"test\" src=\"Ketchbrook_Logo_nobackground.png\" width=\"100\" height=\"150\"></a>"), 
+  
+  shiny::HTML("<div id=\"ketchbrook_banner\" class=\"shiny-image-output\" style=\"width: 100% ; height: 150px\"></div>"),
   
   shiny::div(
     shiny::h1("Tolland County, Connecticut Home Sale Price Estimator"), 
@@ -90,6 +101,9 @@ ui <- fluidPage(
   shiny::div(
     shiny::column(
       width = 8, 
+      shiny::textOutput(
+        "pred_text"
+      ), 
       shinydashboard::valueBoxOutput(
         "pred"
       ), 
@@ -155,6 +169,22 @@ server <- function(input, output, session) {
     )
     
   }, ignoreNULL = FALSE)
+  
+  pred_value <- shiny::reactive({
+    
+    generate_ensemble_pred(
+      model1 = lm_modl, 
+      model2 = xgb_modl, 
+      data = df_eval()
+    )
+    
+  })
+  
+  output$pred_text <- shiny::renderText({
+    
+    pred_value()
+    
+  })
   
   output$pred <- shinydashboard::renderValueBox({
     
