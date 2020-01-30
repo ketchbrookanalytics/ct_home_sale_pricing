@@ -2,10 +2,10 @@ Package: cthomesalepricing
 Title: What the Package Does (One Line, Title Case)
 Version: 0.0.0.9000
 Authors@R: 
-    person(given = "Mike",
+    person(given = "Michael",
            family = "Thomas",
            role = c("aut", "cre"),
-           email = "first.last@example.com")
+           email = "mthomas@ketchbrookanalytics.com")
 Description: What the package does (one paragraph).
 License: What license it uses
 Imports: 
@@ -15,6 +15,8 @@ Imports:
     shiny,
     shinydashboard,
     shinyWidgets,
-    tidyr
+    tidyr, 
+    parsnip, 
+    xgboost
 Encoding: UTF-8
 LazyData: true
