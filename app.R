@@ -8,11 +8,11 @@ library(glue)
 library(parsnip)
 library(xgboost)
 
-modl_data_fnl <- readRDS("modl_data_fnl.RDS")
-lm_modl <- readRDS("lm_modl.RDS")
-lm_train_data <- readRDS("lm_train_data.RDS")
-xgb_modl <- readRDS("xgb_modl.RDS")
-xgb_train_data <- readRDS("xgb_train_data.RDS")
+modl_data_fnl <- readRDS("data/modl_data_fnl.RDS")
+lm_modl <- readRDS("models/lm_modl.RDS")
+lm_train_data <- readRDS("data/lm_train_data.RDS")
+xgb_modl <- readRDS("models/xgb_modl.RDS")
+xgb_train_data <- readRDS("data/xgb_train_data.RDS")
 source("funs.R")
 
 
@@ -30,31 +30,49 @@ cpi_data <- macro.env$CPIAUCSL %>%
 
 
 
-# Build App ---------------------------------------------------------------
+# App UI ---------------------------------------------------------------
 
 ui <- fluidPage(
   
+  # App Overall Styling ----
   shinyWidgets::setBackgroundColor(
     color = c("#F7FBFF", 
-              "#2171B5"), 
+              "#627D9F"), 
     gradient = "linear", 
     direction = c("bottom")
   ), 
   
+  # Title of fluidPage (no appearance)
   title = "Home Sale Price Estimator for Tolland County, Connecticut", 
   
-  # shiny::HTML("<a href=\"https://www.ketchbrookanalytics.com\"><img border=\"0\" alt=\"test\" src=\"Ketchbrook_Logo_nobackground.png\" width=\"100\" height=\"150\"></a>"), 
+  # Add Ketchbrook logo banner
+  shiny::HTML("<div id=\"ketchbrook_banner\" class=\"shiny-image-output\" style=\"width: 100% ; height: 150px\"></div>"), 
   
-  shiny::HTML("<div id=\"ketchbrook_banner\" class=\"shiny-image-output\" style=\"width: 100% ; height: 150px\"></div>"),
-  
+  # Add title and subtitle
   shiny::div(
-    shiny::h1("Tolland County, Connecticut Home Sale Price Estimator"), 
-    shiny::p("Developed by Ketchbrook Analytics")
+    shiny::h1(
+      shiny::span(
+        "Home Sale Price Estimator", 
+        style = "font-family: Impact"
+      )
+    ), 
+    shiny::h3(
+      shiny::span(
+        "Tolland County, Connecticut", 
+        style = "font-family: Impact"
+      )
+    )
   ), 
+  
+  # Insert line break
+  shiny::hr(), 
+  
   
   shiny::div(
     shiny::column(
       width = 4, 
+      
+      # Add wellPanel that contains user-input objects
       shiny::wellPanel(
         shiny::sliderInput(
           inputId = "bathrooms_slider", 
@@ -64,11 +82,15 @@ ui <- fluidPage(
           value = 2, 
           step = 0.5
         ), 
+        
+        # City drop-down menu ----
         shinyWidgets::pickerInput(
           inputId = "city_picker", 
           label = "Select City", 
           choices = c(unique(modl_data_fnl$city))
         ), 
+        
+        # Square Footage numeric input ----
         shiny::numericInput(
           inputId = "sqft_input", 
           label = "Enter Square Footage", 
@@ -76,26 +98,22 @@ ui <- fluidPage(
           min = 400, 
           max = 10000
         ), 
+        
+        # Year Built numeric input ----
         shiny::numericInput(
           inputId = "year_built_input", 
           label = "Enter Year Built", 
           value = 2000, 
-          min = 400, 
-          max = 10000
+          min = 1500, 
+          max = as.numeric(lubridate::year(lubridate::today()))
         ), 
-        # shiny::dateInput(
-        #   inputId = "date_sold_input", 
-        #   label = "Enter Date of Sale \n (or leave unchanged if you would like to simulate sale as of today's date)", 
-        #   value = lubridate::today()
-        # ), 
+        
+        # 
         shiny::actionButton(
           inputId = "predict_button", 
           label = "Generate Prediction", 
           icon = shiny::icon("download")
-        )#,
-        # shiny::verbatimTextOutput(
-        #   "season"
-        # )
+        )
       )
     )
   ), 
@@ -103,22 +121,31 @@ ui <- fluidPage(
   shiny::div(
     shiny::column(
       width = 8, 
-      shiny::textOutput(
-        "pred_text"
-      ), 
-      shinydashboard::valueBoxOutput(
-        "pred"
+      shiny::wellPanel(
+        width = 5, 
+        shiny::span(
+          "Today's Estimated Sale Price: ", 
+          style = "font-size: 150%"
+        ), 
+        shiny::br(), 
+        shiny::span(
+          shiny::textOutput(
+            "pred_text"
+          ), 
+          style = "font-size: 200%"
+        ), 
+        style = "background: #F0F0F0"
       ), 
       shiny::div(
         shiny::tabsetPanel(
           shiny::tabPanel(
-            "Linear Regression", 
+            title = "Linear Regression", 
             shiny::plotOutput(
               "lime_plot_lm"
             )
           ), 
           shiny::tabPanel(
-            "XGBoost", 
+            title = "XGBoost", 
             shiny::plotOutput(
               "lime_plot_xgb"
             )
@@ -184,30 +211,11 @@ server <- function(input, output, session) {
   
   output$pred_text <- shiny::renderText({
     
-    pred_value()
-    
-  })
-  
-  output$pred <- shinydashboard::renderValueBox({
-    
-    shinydashboard::valueBox(
-      "Title", 
-      glue::glue(
-        "Today's Estimated Sale Price: ${format(generate_ensemble_pred(model1 = lm_modl, model2 = xgb_modl, data = df_eval()), big.mark = \",\")}"
-      ), 
-      icon = shiny::icon("credit-card")
+    glue::glue(
+      "${format(generate_ensemble_pred(model1 = lm_modl, model2 = xgb_modl, data = df_eval()), big.mark = \",\")}"
     )
     
   })
-  
-  
-  # output$pred <- shiny::renderText({
-  #   
-  #   glue::glue(
-  #     "Today's Estimated Sale Price: ${format(generate_ensemble_pred(model1 = lm_modl, model2 = xgb_modl, data = df_eval()), big.mark = \",\")}"
-  #   )
-  #   
-  # })
   
   output$lime_plot_lm <- shiny::renderPlot({
     
@@ -228,19 +236,6 @@ server <- function(input, output, session) {
     )
     
   })
-  
-  
-  
-  
-  
-  
-  # output$predicted_value <- shiny::renderPrint({
-  # 
-  #   generate_model_pred(model = lm_modl,
-  #                       data = df_eval)
-  # 
-  # })
-  
   
 }
 
