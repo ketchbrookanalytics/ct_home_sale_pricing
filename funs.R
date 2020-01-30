@@ -2,17 +2,17 @@
 
 generate_model_pred <- function(model, data) {
   
-  round(exp(predict(model, data)) %>% 
+  round(exp(stats::predict(model, data)) %>% 
           dplyr::pull(.pred), 0)
   
 }
 
 generate_ensemble_pred <- function(model1, model2, data) {
   
-  pred1 <- exp(predict(model1, data)) %>%
+  pred1 <- exp(stats::predict(model1, data)) %>%
     dplyr::pull(.pred)
   
-  pred2 <- exp(predict(model2, data)) %>%
+  pred2 <- exp(stats::predict(model2, data)) %>%
     dplyr::pull(.pred)
 
   mean_pred <- round((pred1 + pred2) / 2, 0)
