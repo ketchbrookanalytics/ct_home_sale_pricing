@@ -108,7 +108,7 @@ ui <- fluidPage(
           max = as.numeric(lubridate::year(lubridate::today()))
         ), 
         
-        # 
+        # Action Button to generate predictions ----
         shiny::actionButton(
           inputId = "predict_button", 
           label = "Generate Prediction", 
@@ -122,7 +122,8 @@ ui <- fluidPage(
     shiny::column(
       width = 8, 
       shiny::wellPanel(
-        width = 5, 
+        
+        # Estimated Home Sale Price message ----
         shiny::span(
           "Today's Estimated Sale Price: ", 
           style = "font-size: 150%"
@@ -136,7 +137,10 @@ ui <- fluidPage(
         ), 
         style = "background: #F0F0F0"
       ), 
+      
       shiny::div(
+        
+        # Panel for LIME charts ----
         shiny::tabsetPanel(
           shiny::tabPanel(
             title = "Linear Regression", 
@@ -157,8 +161,12 @@ ui <- fluidPage(
 )
 
 
+
+# App Server --------------------------------------------------------------
+
 server <- function(input, output, session) {
   
+  # Render Ketchbrook banner image ----
   output$ketchbrook_banner <- shiny::renderImage({
     
     list(
@@ -171,16 +179,20 @@ server <- function(input, output, session) {
     
   }, deleteFile = F)
   
-  output$season <- renderText({
-    dplyr::case_when(
-      lubridate::month(lubridate::today()) %in% 3:5 ~ "Spring", 
-      lubridate::month(lubridate::today()) %in% 6:8 ~ "Summer", 
-      lubridate::month(lubridate::today()) %in% 9:11 ~ "Fall", 
-      TRUE ~ "Winter"
-    )
-    
-  })
   
+  # Render season text ----
+  # output$season <- renderText({
+  #   dplyr::case_when(
+  #     lubridate::month(lubridate::today()) %in% 3:5 ~ "Spring", 
+  #     lubridate::month(lubridate::today()) %in% 6:8 ~ "Summer", 
+  #     lubridate::month(lubridate::today()) %in% 9:11 ~ "Fall", 
+  #     TRUE ~ "Winter"
+  #   )
+  #   
+  # })
+  
+  
+  # Reactive dataframe from user inputs ----
   df_eval <- shiny::eventReactive( input$predict_button, {
     
     tibble::tibble(
@@ -199,6 +211,8 @@ server <- function(input, output, session) {
     
   }, ignoreNULL = FALSE)
   
+  
+  # Reactive value for home sale price estimate
   pred_value <- shiny::reactive({
     
     generate_ensemble_pred(
@@ -209,6 +223,8 @@ server <- function(input, output, session) {
     
   })
   
+  
+  # Render estimated home sale price as text ----
   output$pred_text <- shiny::renderText({
     
     glue::glue(
@@ -217,6 +233,8 @@ server <- function(input, output, session) {
     
   })
   
+  
+  # Render LIME plot for lm model ----
   output$lime_plot_lm <- shiny::renderPlot({
     
     generate_lime_chart(
@@ -227,6 +245,8 @@ server <- function(input, output, session) {
     
   })
   
+  
+  # Render LIME plot for xgboost model ----
   output$lime_plot_xgb <- shiny::renderPlot({
     
     generate_lime_chart(
