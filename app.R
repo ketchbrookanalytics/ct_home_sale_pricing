@@ -5,6 +5,8 @@ library(shinydashboard)
 library(shinyWidgets)
 library(tidyverse)
 library(glue)
+library(parsnip)
+library(xgboost)
 
 modl_data_fnl <- readRDS("modl_data_fnl.RDS")
 lm_modl <- readRDS("lm_modl.RDS")
