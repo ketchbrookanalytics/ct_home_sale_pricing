@@ -51,7 +51,15 @@ ui <- shiny::fluidPage(
   title = "Home Sale Price Estimator for Tolland County, Connecticut", 
   
   shiny::navbarPage(
-    title = "Ketchbrook Analytics", 
+    title = "Ketchbrook Analytics",
+    # title = shiny::div(
+    #   shiny::span(
+    #     tags$img(
+    #       src = "Ketchbrook_Logo_nobackground_cropped.png"
+    #     )
+    #   )
+    # ) , 
+    
     collapsible = T, 
     
     shiny::tabPanel(
@@ -84,17 +92,30 @@ ui <- shiny::fluidPage(
           target = "_blank"
         )
     )
-  ),
+  ), 
+  
+  shiny::br(), 
+  shiny::br(), 
+  shiny::br(), 
   
   # Add title and subtitle
   shiny::div(
-    shiny::h1(
-      "Home Sale Price Estimator" 
-    ), 
-    shiny::h3(
-      "Tolland County, Connecticut" 
-    )
+    class = "jumbotron", 
+    shiny::h1("Home Sale Price Estimator"), 
+    shiny::h3("Tolland County, Connecticut")
   ), 
+  
+
+  
+  # Add title and subtitle
+  # shiny::div(
+  #   shiny::h1(
+  #     "Home Sale Price Estimator" 
+  #   ), 
+  #   shiny::h3(
+  #     "Tolland County, Connecticut" 
+  #   )
+  # ), 
   
   # Insert line break
   shiny::hr(), 
