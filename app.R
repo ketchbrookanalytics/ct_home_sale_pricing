@@ -34,27 +34,52 @@ cpi_data <- macro.env$CPIAUCSL %>%
 
 ui <- fluidPage(
   
+  # Page Bootstrap theme ----
+  # theme = shinythemes::shinytheme(theme = "slate"), 
+  shinythemes::themeSelector(), 
+  
+  
   # App Overall Styling ----
-  shinyWidgets::setBackgroundColor(
-    color = c("#F7FBFF", 
-              "#627D9F"), 
-    gradient = "linear", 
-    direction = c("bottom")
-  ), 
+  # shinyWidgets::setBackgroundColor(
+  #   color = c("#F7FBFF", 
+  #             "#627D9F"), 
+  #   gradient = "linear", 
+  #   direction = c("bottom")
+  # ), 
   
   # Title of fluidPage (no appearance)
   title = "Home Sale Price Estimator for Tolland County, Connecticut", 
   
   # Add Ketchbrook logo banner
-  shiny::HTML("<div id=\"ketchbrook_banner\" class=\"shiny-image-output\" style=\"width: 100% ; height: 150px\"></div>"), 
+  # shiny::HTML("<div id=\"ketchbrook_banner\" class=\"shiny-image-output\" style=\"width: 100% ; height: 150px\"></div>"), 
+  shiny::div(id = "ketchbrook_logo_link"), 
+  
+  # shiny::div(
+  #   class = "jumbotron", 
+  #   style = "background:url('Ketchbrook_Logo_nobackground.png'); background-size:cover;"
+  # ),
+  
+  shiny::div(
+    class = "container", 
+    shiny::column(
+      width = 12, 
+      shiny::tags$img(
+        class = "img img-responsive", 
+        src = "Ketchbrook_Logo_nobackground.png", 
+        align = "center", 
+        style = "width:800px;"   # image size is responsive up to 800px
+      ) %>%
+        shiny::a(
+          href = "https://www.ketchbrookanalytics.com/",
+          target = "_blank"
+        )
+    )
+  ),
   
   # Add title and subtitle
   shiny::div(
     shiny::h1(
-      shiny::span(
-        "Home Sale Price Estimator", 
-        style = "font-family: Impact"
-      )
+      "Home Sale Price Estimator" 
     ), 
     shiny::h3(
       shiny::span(
