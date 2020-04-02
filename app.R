@@ -32,11 +32,11 @@ cpi_data <- macro.env$CPIAUCSL %>%
 
 # App UI ---------------------------------------------------------------
 
-ui <- fluidPage(
+ui <- shiny::fluidPage(
   
   # Page Bootstrap theme ----
-  # theme = shinythemes::shinytheme(theme = "slate"), 
-  shinythemes::themeSelector(), 
+  theme = shinythemes::shinytheme(theme = "spacelab"),
+  # shinythemes::themeSelector(), 
   
   
   # App Overall Styling ----
@@ -49,6 +49,16 @@ ui <- fluidPage(
   
   # Title of fluidPage (no appearance)
   title = "Home Sale Price Estimator for Tolland County, Connecticut", 
+  
+  shiny::navbarPage(
+    title = "Ketchbrook Analytics", 
+    collapsible = T, 
+    
+    shiny::tabPanel(
+      title = "Testing", 
+      value = "nav_page_1"
+    )
+  ), 
   
   # Add Ketchbrook logo banner
   # shiny::HTML("<div id=\"ketchbrook_banner\" class=\"shiny-image-output\" style=\"width: 100% ; height: 150px\"></div>"), 
@@ -65,7 +75,7 @@ ui <- fluidPage(
       width = 12, 
       shiny::tags$img(
         class = "img img-responsive", 
-        src = "Ketchbrook_Logo_nobackground.png", 
+        src = "Ketchbrook_Logo_nobackground_cropped.png", 
         align = "center", 
         style = "width:800px;"   # image size is responsive up to 800px
       ) %>%
@@ -82,10 +92,7 @@ ui <- fluidPage(
       "Home Sale Price Estimator" 
     ), 
     shiny::h3(
-      shiny::span(
-        "Tolland County, Connecticut", 
-        style = "font-family: Impact"
-      )
+      "Tolland County, Connecticut" 
     )
   ), 
   
