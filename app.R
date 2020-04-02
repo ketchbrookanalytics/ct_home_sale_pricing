@@ -51,7 +51,11 @@ ui <- shiny::fluidPage(
   title = "Home Sale Price Estimator for Tolland County, Connecticut", 
   
   shiny::navbarPage(
-    title = "Ketchbrook Analytics",
+    title = "Ketchbrook Analytics" %>% 
+      shiny::a(
+        href = "https://www.ketchbrookanalytics.com/", 
+        target = "_blank"
+      ), 
     # title = shiny::div(
     #   shiny::span(
     #     tags$img(
@@ -70,33 +74,33 @@ ui <- shiny::fluidPage(
   
   # Add Ketchbrook logo banner
   # shiny::HTML("<div id=\"ketchbrook_banner\" class=\"shiny-image-output\" style=\"width: 100% ; height: 150px\"></div>"), 
-  shiny::div(id = "ketchbrook_logo_link"), 
+  # shiny::div(id = "ketchbrook_logo_link"), 
   
   # shiny::div(
   #   class = "jumbotron", 
   #   style = "background:url('Ketchbrook_Logo_nobackground.png'); background-size:cover;"
   # ),
   
-  shiny::div(
-    class = "container", 
-    shiny::column(
-      width = 12, 
-      shiny::tags$img(
-        class = "img img-responsive", 
-        src = "Ketchbrook_Logo_nobackground_cropped.png", 
-        align = "center", 
-        style = "width:800px;"   # image size is responsive up to 800px
-      ) %>%
-        shiny::a(
-          href = "https://www.ketchbrookanalytics.com/",
-          target = "_blank"
-        )
-    )
-  ), 
+  # shiny::div(
+  #   class = "container", 
+  #   shiny::column(
+  #     width = 12, 
+  #     shiny::tags$img(
+  #       class = "img img-responsive", 
+  #       src = "Ketchbrook_Logo_nobackground_cropped.png", 
+  #       align = "center", 
+  #       style = "width:800px;"   # image size is responsive up to 800px
+  #     ) %>%
+  #       shiny::a(
+  #         href = "https://www.ketchbrookanalytics.com/",
+  #         target = "_blank"
+  #       )
+  #   )
+  # ), 
   
-  shiny::br(), 
-  shiny::br(), 
-  shiny::br(), 
+  # shiny::br(), 
+  # shiny::br(), 
+  # shiny::br(), 
   
   # Add title and subtitle
   shiny::div(
