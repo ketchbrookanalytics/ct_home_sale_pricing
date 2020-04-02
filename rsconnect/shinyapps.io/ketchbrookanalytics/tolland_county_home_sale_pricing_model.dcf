@@ -1,0 +1,13 @@
+name: tolland_county_home_sale_pricing_model
+title: tolland_county_home_sale_pricing_model
+username:
+account: ketchbrookanalytics
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 1809187
+bundleId: 2799131
+url: https://ketchbrookanalytics.shinyapps.io/tolland_county_home_sale_pricing_model/
+when: 1581629679.8383
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: .gitattributes|.Rbuildignore|00_analysis.R|DESCRIPTION|home_specs.RDS|modl_data.RDS|modl_data_temp.RDS|OPM-RealEstate_Codes.pdf|README.md|blog/part_1_prep/notebook_part1.html|blog/part_1_prep/notebook_part1.Rmd
