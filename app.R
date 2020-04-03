@@ -23,7 +23,7 @@ ui <- shiny::fluidPage(
   
   # Page Bootstrap theme ----
   theme = shinythemes::shinytheme(theme = "spacelab"),
-
+  
   # Title of fluidPage (no appearance)
   title = "Home Sale Price Estimator for Tolland County, Connecticut", 
   
@@ -36,159 +36,131 @@ ui <- shiny::fluidPage(
         href = "https://www.ketchbrookanalytics.com/", 
         target = "_blank"
       ), 
-
+    
     collapsible = T, 
     
     shiny::tabPanel(
-      title = "Testing", 
-      value = "nav_page_1"
-    )
-  ), 
-  
-  # Add Ketchbrook logo banner
-  # shiny::HTML("<div id=\"ketchbrook_banner\" class=\"shiny-image-output\" style=\"width: 100% ; height: 150px\"></div>"), 
-  # shiny::div(id = "ketchbrook_logo_link"), 
-  
-  # shiny::div(
-  #   class = "jumbotron", 
-  #   style = "background:url('Ketchbrook_Logo_nobackground.png'); background-size:cover;"
-  # ),
-  
-  # shiny::div(
-  #   class = "container", 
-  #   shiny::column(
-  #     width = 12, 
-  #     shiny::tags$img(
-  #       class = "img img-responsive", 
-  #       src = "Ketchbrook_Logo_nobackground_cropped.png", 
-  #       align = "center", 
-  #       style = "width:800px;"   # image size is responsive up to 800px
-  #     ) %>%
-  #       shiny::a(
-  #         href = "https://www.ketchbrookanalytics.com/",
-  #         target = "_blank"
-  #       )
-  #   )
-  # ), 
-  
-  # shiny::br(), 
-  # shiny::br(), 
-  # shiny::br(), 
-  
-  # # Add title and subtitle
-  # shiny::div(
-  #   class = "jumbotron", 
-  #   shiny::h1("Home Sale Price Estimator"), 
-  #   shiny::h3("Tolland County, Connecticut")
-  # ), 
-  
-
-  
-  # Add title and subtitle
-  shiny::div(
-    shiny::h1(
-      "Home Sale Price Estimator", 
-      shiny::tags$small("for Tolland County, Connecticut")
-    )
-  ), 
-
-  
-  # Insert line break
-  shiny::hr(), 
-  
-  
-  shiny::div(
-    shiny::column(
-      width = 4, 
+      title = "Model", 
+      value = "nav_page_1", 
       
-      # Add wellPanel that contains user-input objects
-      shiny::wellPanel(
-        shiny::sliderInput(
-          inputId = "bathrooms_slider", 
-          label = "Number of Bathrooms", 
-          min = 1, 
-          max = 7, 
-          value = 2, 
-          step = 0.5
-        ), 
-        
-        # City drop-down menu ----
-        shinyWidgets::pickerInput(
-          inputId = "city_picker", 
-          label = "Select City", 
-          choices = c(unique(modl_data_fnl$city))
-        ), 
-        
-        # Square Footage numeric input ----
-        shiny::numericInput(
-          inputId = "sqft_input", 
-          label = "Enter Square Footage", 
-          value = 1800, 
-          min = 400, 
-          max = 10000
-        ), 
-        
-        # Year Built numeric input ----
-        shiny::numericInput(
-          inputId = "year_built_input", 
-          label = "Enter Year Built", 
-          value = 2000, 
-          min = 1500, 
-          max = as.numeric(lubridate::year(lubridate::today()))
-        ), 
-        
-        # Action Button to generate predictions ----
-        shiny::actionButton(
-          inputId = "predict_button", 
-          label = "Generate Prediction", 
-          icon = shiny::icon("download")
+      # Add title and subtitle
+      shiny::div(
+        shiny::h1(
+          "Home Sale Price Estimator", 
+          shiny::tags$small("for Tolland County, Connecticut")
         )
-      )
-    )
-  ), 
-  
-  shiny::div(
-    shiny::column(
-      width = 8, 
-      shiny::wellPanel(
-        
-        # Estimated Home Sale Price message ----
-        shiny::span(
-          "Today's Estimated Sale Price: ", 
-          style = "font-size: 150%"
-        ), 
-        shiny::br(), 
-        shiny::span(
-          shiny::textOutput(
-            "pred_text"
-          ), 
-          style = "font-size: 200%"
-        ), 
-        style = "background: #F0F0F0"
       ), 
       
+      
+      # Insert line break
+      shiny::hr(), 
+      
+      
       shiny::div(
-        
-        # Panel for LIME charts ----
-        shiny::tabsetPanel(
-          shiny::tabPanel(
-            title = "Linear Regression", 
-            shiny::plotOutput(
-              "lime_plot_lm"
-            )
-          ), 
-          shiny::tabPanel(
-            title = "XGBoost", 
-            shiny::plotOutput(
-              "lime_plot_xgb"
+        shiny::column(
+          width = 4, 
+          
+          # Add wellPanel that contains user-input objects
+          shiny::wellPanel(
+            shiny::sliderInput(
+              inputId = "bathrooms_slider", 
+              label = "Number of Bathrooms", 
+              min = 1, 
+              max = 7, 
+              value = 2, 
+              step = 0.5
+            ), 
+            
+            # City drop-down menu ----
+            shinyWidgets::pickerInput(
+              inputId = "city_picker", 
+              label = "Select City", 
+              choices = c(unique(modl_data_fnl$city))
+            ), 
+            
+            # Square Footage numeric input ----
+            shiny::numericInput(
+              inputId = "sqft_input", 
+              label = "Enter Square Footage", 
+              value = 1800, 
+              min = 400, 
+              max = 10000
+            ), 
+            
+            # Year Built numeric input ----
+            shiny::numericInput(
+              inputId = "year_built_input", 
+              label = "Enter Year Built", 
+              value = 2000, 
+              min = 1500, 
+              max = as.numeric(lubridate::year(lubridate::today()))
+            ), 
+            
+            # Action Button to generate predictions ----
+            shiny::actionButton(
+              inputId = "predict_button", 
+              label = "Generate Prediction", 
+              icon = shiny::icon("download")
             )
           )
         )
+      ), 
+      
+      shiny::div(
+        shiny::column(
+          width = 8, 
+          shiny::wellPanel(
+            
+            # Estimated Home Sale Price message ----
+            shiny::span(
+              "Today's Estimated Sale Price: ", 
+              style = "font-size: 150%"
+            ), 
+            shiny::br(), 
+            shiny::span(
+              shiny::textOutput(
+                "pred_text"
+              ), 
+              style = "font-size: 200%"
+            ), 
+            style = "background: #F0F0F0"
+          ), 
+          
+          shiny::div(
+            
+            # Panel for LIME charts ----
+            shiny::tabsetPanel(
+              
+              shiny::tabPanel(
+                title = "Linear Regression", 
+                shiny::plotOutput(
+                  "lime_plot_lm"
+                )
+              ), 
+              
+              shiny::tabPanel(
+                title = "XGBoost", 
+                shiny::plotOutput(
+                  "lime_plot_xgb"
+                )
+              )
+              
+            )
+            
+          )
+        )
       )
+      
+    ), 
+    
+    shiny::tabPanel(
+      title = "About", 
+      value = "nav_page_2"
     )
+    
   )
+  
 )
-
 
 
 # App Server --------------------------------------------------------------
