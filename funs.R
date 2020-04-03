@@ -107,20 +107,7 @@ get_cpipctchange <- function() {
     dplyr::arrange(date) %>% 
     dplyr::top_n(13, date) %>% 
     dplyr::mutate(cpipctchange = (CPIAUCSL - dplyr::lag(CPIAUCSL, 12)) / dplyr::lag(CPIAUCSL, 12)) %>% 
-    dplyr::slice(n()) %>% 
+    dplyr::slice(dplyr::n()) %>% 
     dplyr::pull(cpipctchange)
   
 }
-
-# generate_price_message <- function() {
-#   
-#   intro <- "Today's Estimated Sale Price: $"
-#   
-#   price <- glue::glue(
-#     "{format(generate_ensemble_pred(model1 = lm_modl, model2 = xgb_modl, data = df_eval()), big.mark = \",\")}"
-#   )
-#   
-#   line_break <- 1
-#   
-#   
-# }
