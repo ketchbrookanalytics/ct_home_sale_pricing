@@ -4,6 +4,7 @@ library(shiny)
 library(shinydashboard)
 library(shinyWidgets)
 library(tidyverse)
+library(data.table)
 library(glue)
 library(parsnip)
 library(xgboost)
@@ -16,54 +17,26 @@ xgb_train_data <- readRDS("data/xgb_train_data.RDS")
 source("funs.R")
 
 
-# Get CPI Data ------------------------------------------------------------
-
-macro.env <- new.env()
-quantmod::getSymbols.FRED("CPIAUCSL", env = macro.env)
-cpi_data <- macro.env$CPIAUCSL %>% 
-  data.table::as.data.table() %>% 
-  dplyr::rename(date = index) %>% 
-  dplyr::mutate(cpipctchange = (CPIAUCSL - dplyr::lag(CPIAUCSL, 12)) / dplyr::lag(CPIAUCSL, 12)) %>% 
-  dplyr::filter(lubridate::year(date) >= 1987) %>% 
-  dplyr::select(-CPIAUCSL) %>% 
-  dplyr::slice(n())
-
-
-
 # App UI ---------------------------------------------------------------
 
 ui <- shiny::fluidPage(
   
   # Page Bootstrap theme ----
   theme = shinythemes::shinytheme(theme = "spacelab"),
-  # shinythemes::themeSelector(), 
-  
-  
-  # App Overall Styling ----
-  # shinyWidgets::setBackgroundColor(
-  #   color = c("#F7FBFF", 
-  #             "#627D9F"), 
-  #   gradient = "linear", 
-  #   direction = c("bottom")
-  # ), 
-  
+
   # Title of fluidPage (no appearance)
   title = "Home Sale Price Estimator for Tolland County, Connecticut", 
   
+  # Navbar  ----
   shiny::navbarPage(
+    
+    # Set the navbar title as the 
     title = "Ketchbrook Analytics" %>% 
       shiny::a(
         href = "https://www.ketchbrookanalytics.com/", 
         target = "_blank"
       ), 
-    # title = shiny::div(
-    #   shiny::span(
-    #     tags$img(
-    #       src = "Ketchbrook_Logo_nobackground_cropped.png"
-    #     )
-    #   )
-    # ) , 
-    
+
     collapsible = T, 
     
     shiny::tabPanel(
@@ -102,24 +75,23 @@ ui <- shiny::fluidPage(
   # shiny::br(), 
   # shiny::br(), 
   
-  # Add title and subtitle
-  shiny::div(
-    class = "jumbotron", 
-    shiny::h1("Home Sale Price Estimator"), 
-    shiny::h3("Tolland County, Connecticut")
-  ), 
+  # # Add title and subtitle
+  # shiny::div(
+  #   class = "jumbotron", 
+  #   shiny::h1("Home Sale Price Estimator"), 
+  #   shiny::h3("Tolland County, Connecticut")
+  # ), 
   
 
   
   # Add title and subtitle
-  # shiny::div(
-  #   shiny::h1(
-  #     "Home Sale Price Estimator" 
-  #   ), 
-  #   shiny::h3(
-  #     "Tolland County, Connecticut" 
-  #   )
-  # ), 
+  shiny::div(
+    shiny::h1(
+      "Home Sale Price Estimator", 
+      shiny::tags$small("for Tolland County, Connecticut")
+    )
+  ), 
+
   
   # Insert line break
   shiny::hr(), 
@@ -223,32 +195,6 @@ ui <- shiny::fluidPage(
 
 server <- function(input, output, session) {
   
-  # Render Ketchbrook banner image ----
-  output$ketchbrook_banner <- shiny::renderImage({
-    
-    list(
-      src = "img/Ketchbrook_Logo_nobackground.png", 
-      contentType = "image/png", 
-      Width = 1000, 
-      height = (1000 * 58) / 368,
-      alt = "KetchbrookLogo"
-    )
-    
-  }, deleteFile = F)
-  
-  
-  # Render season text ----
-  # output$season <- renderText({
-  #   dplyr::case_when(
-  #     lubridate::month(lubridate::today()) %in% 3:5 ~ "Spring", 
-  #     lubridate::month(lubridate::today()) %in% 6:8 ~ "Summer", 
-  #     lubridate::month(lubridate::today()) %in% 9:11 ~ "Fall", 
-  #     TRUE ~ "Winter"
-  #   )
-  #   
-  # })
-  
-  
   # Reactive dataframe from user inputs ----
   df_eval <- shiny::eventReactive( input$predict_button, {
     
@@ -263,7 +209,7 @@ server <- function(input, output, session) {
         lubridate::month(lubridate::today()) %in% 9:11 ~ "Fall", 
         TRUE ~ "Winter"
       ), 
-      cpipctchange = cpi_data$cpipctchange
+      cpipctchange = get_cpipctchange()
     )
     
   }, ignoreNULL = FALSE)
