@@ -30,7 +30,7 @@ ui <- shiny::fluidPage(
   # Navbar  ----
   shiny::navbarPage(
     
-    # Set the navbar title as the 
+    # Set the navbar title, embedded with hyperlink to Ketchbrook website
     title = "Ketchbrook Analytics" %>% 
       shiny::a(
         href = "https://www.ketchbrookanalytics.com/", 
@@ -39,6 +39,7 @@ ui <- shiny::fluidPage(
     
     collapsible = T, 
     
+    # "Model" tab on the navbar ----
     shiny::tabPanel(
       title = "Model", 
       value = "nav_page_1", 
@@ -152,10 +153,41 @@ ui <- shiny::fluidPage(
       )
       
     ), 
-    
+    # "About" tab on the navbar ----
     shiny::tabPanel(
       title = "About", 
-      value = "nav_page_2"
+      value = "nav_page_2", 
+      
+      shiny::div(
+        id = "about"
+      ), 
+      
+      # JumboTron Ad for Ketchbrook ----
+      shiny::fluidRow(
+        shiny::div(
+          class = "jumbotron", 
+          shiny::h1("Enjoying This App?"), 
+          shiny::p(
+            class = "lead", 
+            "Check out what else Ketchbrook Analytics can do"
+          ), 
+          shiny::a(
+            class = "btn btn-primary btn-lg", 
+            href = "https://www.ketchbrookanalytics.com/", 
+            target = "_blank", 
+            "Visit Us"
+          )
+        )
+      ), 
+      
+      shiny::fluidRow(
+        shiny::p(
+          class = "lead", 
+          "Models are only as good as their assumptions & the data they were trained with."
+        ), 
+        shiny::p("Here's some more information on the models used in this app:")
+      )
+      
     )
     
   )
