@@ -42,9 +42,9 @@ ui <- shiny::fluidPage(
     
     collapsible = T, 
     
-    # "Model" tab on the navbar ----
+    # "App" tab on the navbar ----
     shiny::tabPanel(
-      title = "Model", 
+      title = "App", 
       value = "nav_page_1", 
       
       # Add title and subtitle
@@ -156,10 +156,93 @@ ui <- shiny::fluidPage(
       )
       
     ), 
-    # "About" tab on the navbar ----
+    
+    # "Help" page on the navbar ----
+    shiny::tabPanel(
+      title = "Help", 
+      value = "nav_page2", 
+      
+      shiny::div(
+        id = "help_page", 
+        class = "well", 
+        
+        shiny::p(
+          class = "lead", 
+          "How Do I Interpret the Chart?"
+        ), 
+        
+        shiny::p(
+          "The chart on the", 
+          shiny::strong("App"), 
+          "page is a", 
+          shiny::strong(
+            shiny::em("LIME Explainer Chart")
+          ), 
+          ". This chart displays:"
+        ), 
+        
+        shiny::tags$ol(
+          shiny::tags$li(
+            "The top three most influential variables in determining the model's output score for that observation"
+          ), 
+          shiny::tags$li(
+            "The criteria that made that variable influential to the model output for that observation"
+          ), 
+          shiny::tags$li(
+            "Whether or not that variable increased or decreased the model output value (sale price) for that observation"
+          ), 
+          shiny::tags$li(
+            "The relative importance of each variable for determining the model's output score for that observation"
+          )
+        ), 
+        
+        shiny::h3("Example"), 
+        
+        shiny::p("Let's walk through an example of what we can interpret from the chart below using the linear regression model"), 
+        
+        shiny::tags$ol(
+          shiny::tags$li(
+            glue::glue(
+              "The most important feature was the \"yearBuilt\" variable, specifically the fact", 
+              "that the home was built after 1988. In the case of this observation, this variable had a positive impact on the", 
+              "model output value (it increased the predicted sale price).", 
+              .sep = " "
+            )
+          ), 
+          shiny::tags$li(
+            glue::glue(
+              "The second-most important feature was the \"finishedSqFt\" variable, specifically the fact", 
+              "that the home had square footage between 1,748 and 2,256. In the case of this observation, this variable had a negative impact on the", 
+              "model output value (it decreased the predicted sale price).", 
+              .sep = " "
+            )
+          ), 
+          shiny::tags$li(
+            glue::glue(
+              "The third-most important feature was the \"city\" variable, specifically the fact", 
+              "that the home was located in Stafford Springs, Connecticut. In the case of this observation, this variable had a negative impact on the", 
+              "model output value (it decreased the predicted sale price).", 
+              .sep = " "
+            )
+          ), 
+          shiny::tags$li(
+            "The linear regression model is predicting a sale price of $244,535."
+          )
+        ), 
+        
+        shiny::tags$img(
+          class = "img img-responsive", 
+          src = "chart_explanations_full.png", 
+          style = "width:1200px;"   # image size is responsive up to 200px
+        )
+        
+      )
+    ), 
+    
+    # "About" page on the navbar ----
     shiny::tabPanel(
       title = "About", 
-      value = "nav_page_2", 
+      value = "nav_page_3", 
       
       shiny::div(
         id = "about"
@@ -237,7 +320,7 @@ ui <- shiny::fluidPage(
           
           shiny::p(
             class = "lead", 
-            "Model"
+            "Models"
           ), 
           
           # Model toggle button ----
@@ -317,7 +400,7 @@ ui <- shiny::fluidPage(
     
     shiny::tabPanel(
       title = "Use Cases", 
-      value = "nav_page_3", 
+      value = "nav_page_4", 
       
       shiny::div(
         id = "using_app"
