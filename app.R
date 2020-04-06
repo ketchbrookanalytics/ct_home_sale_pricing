@@ -8,6 +8,7 @@ library(data.table)
 library(glue)
 library(parsnip)
 library(xgboost)
+library(shinyjs)
 
 modl_data_fnl <- readRDS("data/modl_data_fnl.RDS")
 lm_modl <- readRDS("models/lm_modl.RDS")
@@ -180,13 +181,50 @@ ui <- shiny::fluidPage(
         )
       ), 
       
+      # Header for model information ----
       shiny::fluidRow(
         shiny::p(
           class = "lead", 
           "Models are only as good as their assumptions & the data they were trained with."
         ), 
         shiny::p("Here's some more information on the models used in this app:")
-      )
+      ), 
+      
+      shinyjs::useShinyjs(), 
+      
+      shiny::fluidRow(
+        
+        shiny::column(
+          width = 12, 
+          class = "well", 
+          
+          shiny::p(
+            class = "lead", 
+            "Data"
+          ), 
+          
+          shiny::actionButton(
+            inputId = "data_toggle_button", 
+            label = "See More"
+          ), 
+          
+          shiny::div(
+            
+            id = "data_toggle_info", 
+            
+            shiny::br(), 
+            
+            shiny::textInput(
+              inputId = "first_name", 
+              label = "First Name", 
+              placeholder = "Enter your first name"
+            )
+            
+          ) %>% shinyjs::hidden()
+          
+        )
+        
+        )
       
     )
     
@@ -260,6 +298,16 @@ server <- function(input, output, session) {
       model = xgb_modl, 
       train_data = xgb_train_data, 
       new_data = df_eval()
+    )
+    
+  })
+  
+  # Toggle Data Info
+  shinyjs::onclick(id = "data_toggle_button", {
+    
+    shinyjs::toggle(
+      id = "data_toggle_info", 
+      anim = T 
     )
     
   })
