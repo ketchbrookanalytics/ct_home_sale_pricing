@@ -205,7 +205,7 @@ ui <- shiny::fluidPage(
           
           shiny::actionButton(
             inputId = "data_toggle_button", 
-            label = "See More"
+            label = "Expand/Collapse"
           ), 
           
           shiny::div(
@@ -214,11 +214,15 @@ ui <- shiny::fluidPage(
             
             shiny::br(), 
             
-            shiny::textInput(
-              inputId = "first_name", 
-              label = "First Name", 
-              placeholder = "Enter your first name"
+            shiny::uiOutput(
+              outputId = "data_toggle_text"
             )
+            
+            # shiny::textInput(
+            #   inputId = "first_name", 
+            #   label = "First Name", 
+            #   placeholder = "Enter your first name"
+            # )
             
           ) %>% shinyjs::hidden()
           
@@ -308,6 +312,20 @@ server <- function(input, output, session) {
     shinyjs::toggle(
       id = "data_toggle_info", 
       anim = T 
+    )
+    
+  })
+  
+  output$data_toggle_text <- shiny::renderUI({
+    
+    shiny::div(
+      shiny::p(
+        glue::glue(
+          "There are multiple sources of data that were used in developing the models.", 
+          "The final models were trained using {format(nrow(lm_train_data), big.mark = \",\")} observations across {ncol(lm_train_data)} column variables.", 
+          .sep = " "
+        )
+      )
     )
     
   })
