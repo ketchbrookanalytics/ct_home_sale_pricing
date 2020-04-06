@@ -91,7 +91,8 @@ generate_lime_chart <- function(model, train_data, new_data) {
   
 }
 
-
+# Function to calculate the percent change in the Consumer Price Index using
+# the most recent date's value versus the value 12 months prior
 get_cpipctchange <- function() {
   
   macro.env <- new.env()
