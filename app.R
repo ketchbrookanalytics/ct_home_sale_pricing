@@ -341,9 +341,11 @@ ui <- shiny::fluidPage(
         
         shiny::p(
           glue::glue(
-            "This type of application can serve as a tool for your audit team to interface with", 
+            "This type of application can serve as a tool for your internal audit team to interface with", 
             "and help them gain an understanding about your model, the variables it uses, the", 
             "effect each variable has on the model output, and to back-test a particular observation.", 
+            "This can be extremely useful to hand your external auditors as well, allowing them to get", 
+            "up to speed quicker with your model as opposed to strictly reading documentation.", 
             .sep = " "
           )
         )
@@ -362,6 +364,21 @@ ui <- shiny::fluidPage(
             "Providing them with a user interface where they can see the model score an observation", 
             "can yield incredible dividends in terms of bridging the gap between the modeling team", 
             "and the managerial suite.", 
+            .sep = " "
+          )
+        )
+      ), 
+      
+      shiny::div(
+        class = "well", 
+        
+        shiny::h3("Validation within the Modeling Team"), 
+        
+        shiny::p(
+          glue::glue(
+            "This tool can be useful as a gut-check for the model developer to ensure that the model they", 
+            "are developing is stable across all variables. Furthermore, the team member validating the", 
+            "model developer's work can use this tool to provide a sensitivity analysis of the model.", 
             .sep = " "
           )
         )
