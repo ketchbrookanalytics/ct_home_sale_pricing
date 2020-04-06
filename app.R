@@ -189,9 +189,9 @@ ui <- shiny::fluidPage(
       shiny::fluidRow(
         shiny::p(
           class = "lead", 
-          "Models are only as good as their assumptions & the data they were trained with."
+          "Models are only as good as their assumptions and the data they were trained with."
         ), 
-        shiny::p("Here's some more information on the models used in this app:")
+        shiny::p("Here's some more information on the models and data used in this app:")
       ), 
       
       shinyjs::useShinyjs(), 
@@ -227,7 +227,145 @@ ui <- shiny::fluidPage(
           
         )
         
+      ), 
+      
+      shiny::fluidRow(
+        
+        shiny::column(
+          width = 12, 
+          class = "well", 
+          
+          shiny::p(
+            class = "lead", 
+            "Model"
+          ), 
+          
+          # Model toggle button ----
+          shiny::actionButton(
+            inputId = "model_toggle_button", 
+            label = "Show/Hide"
+          ), 
+          
+          shiny::div(
+            
+            id = "model_toggle_info", 
+            
+            shiny::br(), 
+            
+            shiny::uiOutput(
+              outputId = "model_toggle_text"
+            )
+            
+          ) %>% shinyjs::hidden()
+          
         )
+        
+      ), 
+      
+      shiny::fluidRow(
+        
+        shiny::column(
+          width = 12, 
+          class = "well", 
+          
+          shiny::p(
+            class = "lead", 
+            "Chart"
+          ), 
+          
+          # Chart toggle button ----
+          shiny::actionButton(
+            inputId = "chart_toggle_button", 
+            label = "Show/Hide"
+          ), 
+          
+          shiny::div(
+            
+            id = "chart_toggle_info", 
+            
+            shiny::br(), 
+            
+            shiny::span(
+              glue::glue(
+              "The chart seen in the application is produced via a technique called \"LIME\",", 
+              "which stands for \"Local Interpretable Model-Agnostic Explanations\". The original", 
+              "paper citing the methodology can be found", 
+              .sep = " "
+              ), 
+              shiny::a(
+                href = "https://arxiv.org/abs/1602.04938", 
+                target = "_blank", 
+                "here"
+              ), 
+              glue::glue(
+                ". This techique fits a linear model through the given observation, then looks at", 
+                "the nearest (hence, \"Local\") data points around that particular observation to gauge", 
+                "how the model performs at those other points in the vicinity compared to the observation", 
+                "at hand.", 
+                .sep = " "
+              )
+              
+            )
+            
+          ) %>% shinyjs::hidden()
+          
+        )
+        
+      )
+      
+    ), 
+    
+    shiny::tabPanel(
+      title = "Use Cases", 
+      value = "nav_page_3", 
+      
+      shiny::div(
+        id = "using_app"
+      ), 
+      
+      shiny::h1("Possible Use Cases"), 
+      
+      shiny::p(
+        glue::glue(
+        "Why might you need an application from Ketchbrook Analytics to help you build user-friendly", 
+        "model interpretation capabilities around your predictive models? Here are some reasons why", 
+        "your business might benefit from a solution like this:", 
+        .sep = " "
+        )
+      ), 
+      
+      shiny::div(
+        class = "well", 
+        
+        shiny::h3("Auditing Your Internal Models"),
+        
+        shiny::p(
+          glue::glue(
+            "This type of application can serve as a tool for your audit team to interface with", 
+            "and help them gain an understanding about your model, the variables it uses, the", 
+            "effect each variable has on the model output, and to back-test a particular observation.", 
+            .sep = " "
+          )
+        )
+      ), 
+      
+      shiny::div(
+        class = "well", 
+        
+        shiny::h3("Presentation to Management & Board of Directors"), 
+        
+        shiny::p(
+          glue::glue(
+            "If you have a model in place in your organization, it can be difficult to provide something", 
+            "tangible to non-technical stakeholders who need to gain comfort from an organizational risk", 
+            "perspective prior to relying on that model to impact business decisions and outcomes.", 
+            "Providing them with a user interface where they can see the model score an observation", 
+            "can yield incredible dividends in terms of bridging the gap between the modeling team", 
+            "and the managerial suite.", 
+            .sep = " "
+          )
+        )
+      )
       
     )
     
@@ -346,24 +484,24 @@ server <- function(input, output, session) {
             href = "https://github.com/Chicago/RSocrata", 
             target = "_blank", 
             "RSocrata API"
-        )
-      ), 
-      # Data Sources - Zillow ----
-      shiny::tags$li(
-        shiny::strong(
-          shiny::a(
-            href = "https://www.zillow.com", 
-            target = "_blank", 
-            "Zillow"
-          ) 
+          )
         ), 
-        ": retrieved data about home details (number of bedrooms, number of bathrooms, etc.), accessed via the ", 
-        shiny::a(
-          href = "https://github.com/stharms/realEstAnalytics.r", 
-          target = "_blank", 
-          "realEstAnalytics interface to the Zillow API"
+        # Data Sources - Zillow ----
+        shiny::tags$li(
+          shiny::strong(
+            shiny::a(
+              href = "https://www.zillow.com", 
+              target = "_blank", 
+              "Zillow"
+            ) 
+          ), 
+          ": retrieved data about home details (number of bedrooms, number of bathrooms, etc.), accessed via the ", 
+          shiny::a(
+            href = "https://github.com/stharms/realEstAnalytics.r", 
+            target = "_blank", 
+            "realEstAnalytics interface to the Zillow API"
+          )
         )
-      )
       ), 
       
       shiny::p(
@@ -521,7 +659,87 @@ server <- function(input, output, session) {
     
   })
   
-
+  
+  # Toggle Model Info
+  shinyjs::onclick(id = "model_toggle_button", {
+    
+    shinyjs::toggle(
+      id = "model_toggle_info", 
+      anim = T 
+    )
+    
+  })
+  
+  # Render section in "About" navbar page that details the models
+  output$model_toggle_text <- shiny::renderUI({
+    
+    shiny::div(
+      shiny::p(
+        glue::glue(
+          "Two models were developed for use in this application. The final predicted value", 
+          "seen in the user interface is the result of taking the average of each model's", 
+          "predicted value for the sale price. This ensemble approach was found to yield the", 
+          "lowest error (RMSE and MAE).", 
+          .sep = " "
+        )
+      ), 
+      
+      # Linear Regression detail ----
+      shiny::span(
+        class = "lead", 
+        shiny::a(
+          href = "https://en.wikipedia.org/wiki/Linear_regression", 
+          target = "_blank", 
+          "Linear Regression"
+        )
+      ), 
+      
+      shiny::p(
+        glue::glue(
+          "The first model uses simple linear regression, which allows for a straightforward", 
+          "interpretation of the model coefficients, and each variable's impact on the output", 
+          "predicted value.", 
+          .sep = " "
+        )
+      ), 
+      
+      # Linear Regression detail ----
+      shiny::span(
+        class = "lead", 
+        shiny::a(
+          href = "https://xgboost.readthedocs.io/en/latest/", 
+          target = "_blank", 
+          "XGBoost"
+        )
+      ), 
+      
+      shiny::p(
+        glue::glue(
+          "The second model uses a specific gradient boosting algorithm, called \"XGBoost\".", 
+          "There are both classification and regression interpretations of this algorithm,", 
+          "and the regression implementation was used for our home sale price prediction model.", 
+          "This algorithm produces a non-linear \"black box\" model, so the coefficients are not", 
+          "easily interpretable. This is where the power of the LIME technique shines, allowing us", 
+          "to gain some insight into how the model is making its predictions.", 
+          .sep = " "
+        )
+      )
+      
+    )
+    
+  })
+  
+  # Toggle Chart Info
+  shinyjs::onclick(id = "chart_toggle_button", {
+    
+    shinyjs::toggle(
+      id = "chart_toggle_info", 
+      anim = T 
+    )
+    
+  })
+  
+  
   
 }
 
