@@ -10,6 +10,8 @@ library(parsnip)
 library(xgboost)
 library(shinyjs)
 
+options(scipen = 999)
+
 modl_data_fnl <- readRDS("data/modl_data_fnl.RDS")
 lm_modl <- readRDS("models/lm_modl.RDS")
 lm_train_data <- readRDS("data/lm_train_data.RDS")
@@ -170,7 +172,7 @@ ui <- shiny::fluidPage(
           shiny::h1("Enjoying This App?"), 
           shiny::p(
             class = "lead", 
-            "Check out what else Ketchbrook Analytics can do"
+            "Check out what else Ketchbrook Analytics can do for you."
           ), 
           shiny::a(
             class = "btn btn-primary btn-lg", 
@@ -180,6 +182,8 @@ ui <- shiny::fluidPage(
           )
         )
       ), 
+      
+      shiny::hr(), 
       
       # Header for model information ----
       shiny::fluidRow(
@@ -203,9 +207,10 @@ ui <- shiny::fluidPage(
             "Data"
           ), 
           
+          # Data toggle button ----
           shiny::actionButton(
             inputId = "data_toggle_button", 
-            label = "Expand/Collapse"
+            label = "Show/Hide"
           ), 
           
           shiny::div(
@@ -217,12 +222,6 @@ ui <- shiny::fluidPage(
             shiny::uiOutput(
               outputId = "data_toggle_text"
             )
-            
-            # shiny::textInput(
-            #   inputId = "first_name", 
-            #   label = "First Name", 
-            #   placeholder = "Enter your first name"
-            # )
             
           ) %>% shinyjs::hidden()
           
@@ -322,13 +321,207 @@ server <- function(input, output, session) {
       shiny::p(
         glue::glue(
           "There are multiple sources of data that were used in developing the models.", 
-          "The final models were trained using {format(nrow(lm_train_data), big.mark = \",\")} observations across {ncol(lm_train_data)} column variables.", 
+          "The final models were trained using",
+          "{format(nrow(lm_train_data), big.mark = \",\")} observations across {ncol(lm_train_data)} column variables,",
+          "including the dependent variable, sale price.", 
           .sep = " "
         )
+      ), 
+      
+      shiny::p("Data was gathered from the following sources:"), 
+      
+      shiny::tags$ul(
+        
+        # Data Sources - CT Open Data ----
+        shiny::tags$li(
+          shiny::strong(
+            shiny::a(
+              href = "https://data.ct.gov/Housing-and-Development/Real-Estate-Sales-2001-2017/5mzw-sjtu", 
+              target = "_blank", 
+              "Connecticut Open Data"
+            ) 
+          ), 
+          ": includes data about historical home sales in Connecticut, accessed via the ", 
+          shiny::a(
+            href = "https://github.com/Chicago/RSocrata", 
+            target = "_blank", 
+            "RSocrata API"
+        )
+      ), 
+      # Data Sources - Zillow ----
+      shiny::tags$li(
+        shiny::strong(
+          shiny::a(
+            href = "https://www.zillow.com", 
+            target = "_blank", 
+            "Zillow"
+          ) 
+        ), 
+        ": retrieved data about home details (number of bedrooms, number of bathrooms, etc.), accessed via the ", 
+        shiny::a(
+          href = "https://github.com/stharms/realEstAnalytics.r", 
+          target = "_blank", 
+          "realEstAnalytics interface to the Zillow API"
+        )
       )
+      ), 
+      
+      shiny::p(
+        glue::glue(
+          "Here are the final variables chosen & engineered for these models, along with their descriptions", 
+          "(Note: you may be surprised that the number of bedrooms was not used.", 
+          "This omission was due to high collinearity between the number of bathrooms, and the number of bathrooms", 
+          "were found to be more predictive of the sale price than the number of bedrooms.):",
+          .sep = " "
+        )
+      ), 
+      
+      shiny::tags$ul(
+        
+        # Data - Bullet Point - City ----
+        shiny::tags$li(
+          shiny::strong("City: "), 
+          glue::glue(
+            "a categorical independent variable representing which one of the",
+            "{length(unique(lm_train_data$city))}", 
+            "unique towns/cities in Tolland County, Connecticut, that the sale occurred", 
+            "In the app, the user has the ability to choose the value (city)",
+            "that they want the model to use in its prediction calculation.", 
+            .sep = " "
+          )
+        ), 
+        
+        # Data - Bullet Point - Bathrooms ----
+        shiny::tags$li(
+          shiny::strong("Bathrooms: "), 
+          glue::glue(
+            "a continuous independent variable representing the number of bathrooms in the", 
+            "home at the time of the sale. This variable had values between", 
+            "{min(lm_train_data$bathrooms)} and {max(lm_train_data$bathrooms)}.", 
+            "In the app, the user has the ability to choose the value (number of bathrooms)",
+            "that they want the model to use in its prediction calculation.",
+            .sep = " "
+          )
+        ), 
+        
+        # Data - Bullet Point - Square Footage ----
+        shiny::tags$li(
+          shiny::strong("Square Footage: "), 
+          glue::glue(
+            "a continuous independent variable representing the finished square footage of the", 
+            "home at the time of the sale. This variable had values between", 
+            "{min(lm_train_data$finishedSqFt)} and {format(max(lm_train_data$finishedSqFt), big.mark = \",\")}.", 
+            "In the app, the user has the ability to choose the value (square footage)",
+            "that they want the model to use in its prediction calculation.",
+            .sep = " "
+          )
+        ), 
+        
+        # Data - Bullet Point - Year Built ----
+        shiny::tags$li(
+          shiny::strong("Year Built: "), 
+          glue::glue(
+            "a continuous independent variable representing the year the home was built.", 
+            "This variable had values between", 
+            "{min(lm_train_data$yearBuilt)} and {max(lm_train_data$yearBuilt)}.", 
+            "In the app, the user has the ability to choose the value (year built)",
+            "that they want the model to use in its prediction calculation.",
+            .sep = " "
+          )
+        ), 
+        
+        # Data - Bullet Point - CPI ----
+        shiny::tags$li(
+          shiny::strong("Consumer Price Index (% Change from 12 Months Prior): "), 
+          glue::glue(
+            "a continuous independent variable representing the percent change in the", 
+            "Consumer Price Index between the time of the sale and the Consumer Price Index", 
+            "12 months prior. The purpose of this variable was to serve as a proxy variable", 
+            "for the year of the sale, and to help account for some of the time series elements", 
+            "seen in the raw data (e.g., increasing trend in home sale prices over time).", 
+            "In the app, this value is generated behind the scenes. When a user opens the app,", 
+            "the most recent data for the Consumer Price Index is pulled in via the FRED API", 
+            "that they want the model to use in its prediction calculation.",
+            .sep = " "
+          )
+        ), 
+        
+        # Data - Bullet Point - Season ----
+        shiny::tags$li(
+          shiny::strong("Season: "), 
+          glue::glue(
+            "a categorical independent variable representing the season during which the sale occurred.", 
+            "This variable was engineered based upon the date of the sale. Sales in December, January,", 
+            "or February were coded to a value of \"Winter\". Sales that took place in March, April, or May", 
+            "were coded to a value of \"Spring\". Sales that took place in June, July, or August were coded", 
+            "to a value of \"Summer\". Sales that took place in Septebmer, October, or November were coded", 
+            "to a value of \"Fall\". In the app, this value is generated behind the scenes. When a user", 
+            "opens the app, the system date is capture and translated into the season based upon the month", 
+            "of the system date for the model to use in its prediction calculation.",
+            .sep = " "
+          )
+        ), 
+        
+        # Data - Bullet Point - Sale Price ----
+        shiny::tags$li(
+          shiny::strong("Sale Price: "), 
+          glue::glue(
+            "the numeric idependent variable representing the sale price. For data preparation purposes", 
+            "(specifically for joining to the Zillow data, which represents only current home data),", 
+            "only the most recent sale price for a given address was used. Additionally, a log transformation", 
+            "was applied to this variable for helping to satisfy statistical normality & stationarity assumptions.", 
+            "Consequently, the model output gets transformed via the exponential function prior to consumption by", 
+            "the end user.", 
+            "In the training data, this dependent variable had values between", 
+            "{format(exp(min(lm_train_data$logLastSoldPrice)), big.mark = \",\")} and",
+            "{format(exp(max(lm_train_data$logLastSoldPrice)), big.mark = \",\")}.", 
+            "In the app, this is the output \"prediction\" of the sale price returned to the user.",
+            .sep = " "
+          )
+        )
+        
+      ), 
+      
+      # Data Preparation Steps ----
+      shiny::p("There were some additional data preparation steps that were taken in the training data:"), 
+      
+      shiny::tags$ul(
+        
+        shiny::tags$li(
+          "Only residential properties were included."
+        ), 
+        shiny::tags$li(
+          "Sales with a non-use code were excluded. For more information, visit the Connecticut Open Data link above."
+        ), 
+        shiny::tags$li(
+          "Only sales between $100,000 and $1,000,000 were included, to ensure stabality against outliers."
+        ), 
+        shiny::tags$li(
+          "Only single- or multi-family homes were included."
+        ), 
+        shiny::tags$li(
+          "Only residential properties were included."
+        ), 
+        shiny::tags$li(
+          "Towns with less than 100 observations (sales) in the dataset were excluded."
+        ), 
+        shiny::tags$li(
+          "Only properties with between 1 and 7 bathrooms were included, to ensure stabality against outliers."
+        ), 
+        shiny::tags$li(
+          "Only properties with finished square footage betwen 400 and 10,000 were included, to ensure stabality against outliers."
+        ), 
+        shiny::tags$li(
+          "Only properties with finished square footage betwen 400 and 10,000 were included, to ensure stabality against outliers."
+        )
+        
+      )
+      
     )
     
   })
+  
+
   
 }
 
