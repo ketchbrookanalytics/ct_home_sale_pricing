@@ -230,10 +230,15 @@ ui <- shiny::fluidPage(
           )
         ), 
         
-        shiny::tags$img(
-          class = "img img-responsive", 
-          src = "chart_explanations_full.png", 
-          style = "width:1200px;"   # image size is responsive up to 200px
+        shiny::div(
+          class = "container", 
+          
+          shiny::tags$img(
+            class = "img img-responsive", 
+            src = "chart_explanations_full.png", 
+            style = "width:1200px;"   # image size is responsive up to 200px
+          )
+        
         )
         
       )
