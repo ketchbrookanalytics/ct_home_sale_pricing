@@ -1,7 +1,7 @@
 # Home Sale Price Estimator for Tolland County, Connecticut
  Repo for materials associated with the pricing model developed for homes in Tolland County, Connecticut 
  
- The accompanying Shiny application can be found here: [https://ketchbrookanalytics.shinyapps.io/tolland_county_home_sale_pricing_model/](https://ketchbrookanalytics.shinyapps.io/tolland_county_home_sale_pricing_model/)  
+ The accompanying Shiny application can be found here: [https://ketchbrookanalytics.shinyapps.io/tolland-county-home-sale-pricing-app/](https://ketchbrookanalytics.shinyapps.io/tolland-county-home-sale-pricing-app/)  
  
 This application uses data on historical home sale prices in Tolland County, Connecticut, and two models fit using linear regression & XGBoost regression to predict the sale price of a home sold today given parameter values entered by the user.  The resultant predicted value is the *mean* of the two model output values.  
 
