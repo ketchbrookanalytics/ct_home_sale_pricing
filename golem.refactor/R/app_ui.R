@@ -9,8 +9,24 @@ app_ui <- function(request) {
     # Leave this function for adding external resources
     golem_add_external_resources(),
     # Your application UI logic
-    fluidPage(
-      h1("golem.refactor")
+    bslib::page_navbar(
+      title = shiny::a(
+        "Ketchbrook Analytics",
+        href = "https://www.ketchbrookanalytics.com/", 
+        target = "_blank"
+      ),
+      bslib::nav_panel(
+        title = "App"
+      ),
+      bslib::nav_panel(
+        title = "Help"
+      ),
+      bslib::nav_panel(
+        title = "About"
+      ),
+      bslib::nav_panel(
+        title = "Use Cases"
+      )
     )
   )
 }
