@@ -1,0 +1,27 @@
+// https://github.com/rocker-org/devcontainer-features
+{
+	"build": {
+		"dockerfile": "../Dockerfile",
+		"context": "../"
+	},
+
+	// Configure tool-specific properties.
+	"customizations": {
+		// Settings for VS Code.
+		"vscode": {
+			"extensions": [
+				"reditorsupport.r",
+				"RDebugger.r-debugger"
+			],
+			"settings": {
+				"r.bracketedPaste": true,
+				"r.plot.useHttpgd": true,
+				"r.lsp.diagnostics": false,
+				"r.lsp.promptToInstall": false
+			}
+		}
+	}
+
+	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+	// "remoteUser": "root"
+}
