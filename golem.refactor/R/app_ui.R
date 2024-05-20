@@ -22,7 +22,8 @@ app_ui <- function(request) {
         title = "Help"
       ),
       bslib::nav_panel(
-        title = "About"
+        title = "About",
+        mod_about_ui("about_1")
       ),
       bslib::nav_panel(
         title = "Use Cases",
