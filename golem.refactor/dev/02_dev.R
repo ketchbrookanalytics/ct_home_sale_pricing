@@ -22,10 +22,11 @@ attachment::att_amend_desc()
 ## Create a module infrastructure in R/
 golem::add_module(name = "use_cases", with_test = FALSE) # Name of the module
 golem::add_module(name = "about", with_test = FALSE) # Name of the module
+golem::add_module(name = "app", with_test = FALSE) # Name of the module
 
 ## Add helper functions ----
 ## Creates fct_* and utils_*
-golem::add_fct("helpers", with_test = TRUE)
+golem::add_fct("app", with_test = FALSE)
 golem::add_utils("helpers", with_test = TRUE)
 
 ## External resources

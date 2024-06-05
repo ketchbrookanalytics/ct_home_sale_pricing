@@ -16,7 +16,8 @@ app_ui <- function(request) {
         target = "_blank"
       ),
       bslib::nav_panel(
-        title = "App"
+        title = "App",
+        mod_app_ui("app_1")
       ),
       bslib::nav_panel(
         title = "Help"

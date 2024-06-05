@@ -2,16 +2,28 @@ Package: golem.refactor
 Title: An Amazing Shiny App
 Version: 0.0.0.9000
 Authors@R: 
-    person(given = "firstname",
-           family = "lastname",
-           role = c("aut", "cre"),
-           email = "your@email.com")
+    person("firstname", "lastname", , "your@email.com", role = c("aut", "cre"))
 Description: What the package does (one paragraph).
 License: What license is it under?
+Depends: 
+    R (>= 2.10)
 Imports: 
+    bsicons,
+    bslib,
     config (>= 0.3.2),
+    data.table,
+    dplyr,
+    echarts4r,
+    glue,
     golem (>= 0.4.1),
-    shiny (>= 1.8.1.1)
+    lime,
+    lubridate,
+    parsnip,
+    quantmod,
+    scales,
+    shiny (>= 1.8.1.1),
+    stats,
+    tibble
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.3.1
