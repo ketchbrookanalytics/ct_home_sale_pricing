@@ -142,7 +142,10 @@ generate_lime_chart <- function(model, train_data, new_data) {
           fontSize = 15
         ),
         nameLocation = "middle",
-        nameGap = 200
+        nameGap = 250,
+        axisLabel = list(
+          fontSize = 15
+        )
       ) |> 
       echarts4r::e_color(
         # When we have both positive and negative values, unique(chart_data$color) returns c("green", "red").
