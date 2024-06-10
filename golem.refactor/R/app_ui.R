@@ -33,9 +33,6 @@ app_ui <- function(request) {
         mod_app_ui("app_1")
       ),
       bslib::nav_panel(
-        title = "Help"
-      ),
-      bslib::nav_panel(
         title = "About",
         mod_about_ui("about_1")
       ),
