@@ -132,7 +132,7 @@ generate_lime_chart <- function(model, train_data, new_data) {
       ) |>
       echarts4r::e_title(
         glue::glue(
-          "Prediction {scales::label_currency()(explanation$prediction[[1]])} | Explanation Fit {round(explanation$model_r2[[1]], 3)}"
+          "Prediction {scales::label_currency()(explanation$prediction[[1]])}"
         )
       ) |>
       echarts4r::e_y_axis(
