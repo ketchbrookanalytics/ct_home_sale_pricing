@@ -10,8 +10,13 @@
 mod_app_ui <- function(id){
   ns <- NS(id)
   tagList(
+    shiny::div(
+      shiny::h1(
+        "Home Sale Price Estimator", 
+        shiny::tags$small("for Tolland County, Connecticut", style = "color: #999999")
+      )
+    ),
     bslib::card(
-      bslib::card_header("Home Sale Price Estimator (for Tolland County, Connecticut)"),
       bslib::layout_sidebar(
 
         sidebar = bslib::sidebar(
