@@ -1,22 +1,32 @@
-Package: cthomesalepricing
-Title: What the Package Does (One Line, Title Case)
+Package: ct.home.sale.pricing
+Title: Home Sale Price Estimator for Tolland County (Connecticut)
 Version: 0.0.0.9000
 Authors@R: 
-    person(given = "Michael",
-           family = "Thomas",
-           role = c("aut", "cre"),
-           email = "mthomas@ketchbrookanalytics.com")
-Description: What the package does (one paragraph).
-License: What license it uses
+    person("firstname", "lastname", , "your@email.com", role = c("aut", "cre"))
+Description: Use data on historical home sale prices in Tolland County, Connecticut and two modeling techniques (linear regression, xgboost) to predict the sale price of a home sold today given parameter values entered by the user.
+License: What license is it under?
+Depends: 
+    R (>= 2.10)
 Imports: 
+    bsicons,
+    bslib,
+    config (>= 0.3.2),
     data.table,
     dplyr,
+    echarts4r,
     glue,
-    shiny,
-    shinydashboard,
-    shinyWidgets,
-    tidyr, 
-    parsnip, 
+    golem (>= 0.4.1),
+    lime,
+    lubridate,
+    markdown,
+    parsnip,
+    pkgload,
+    quantmod,
+    scales,
+    shiny (>= 1.8.1.1),
+    stats,
+    tibble,
     xgboost
 Encoding: UTF-8
 LazyData: true
+RoxygenNote: 7.3.1
