@@ -19,9 +19,13 @@ app_ui <- function(request) {
         success = "#0f294d"
       ),
       bslib::nav_item(
-        shiny::img(
-          src = "www/ketchbrook_logo.png",
-          width = 150
+        shiny::a(
+          shiny::img(
+            src = "www/ketchbrook_logo.png",
+            width = 150
+          ),
+          href = "https://www.ketchbrookanalytics.com/", 
+          target = "_blank"
         )
       ),
       bslib::nav_panel(
