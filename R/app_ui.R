@@ -60,10 +60,10 @@ golem_add_external_resources <- function() {
   )
 
   tags$head(
-    favicon(),
+    favicon(ext = "png"),
     bundle_resources(
       path = app_sys("app/www"),
-      app_title = "ct.home.sale.pricing"
+      app_title = "Home Sale Price Estimator"
     )
     # Add here other external resources
     # for example, you can add shinyalert::useShinyalert()
