@@ -10,6 +10,14 @@ app_ui <- function(request) {
     golem_add_external_resources(),
     # Your application UI logic
     bslib::page_navbar(
+      theme = bslib::bs_theme(
+        bootswatch = "sandstone",
+        fg = "#000000",
+        bg = "#ffffff",
+        primary = "#2f70c8",
+        secondary = "#2f70c8",
+        success = "#0f294d"
+      ),
       bslib::nav_item(
         shiny::img(
           src = "www/ketchbrook_logo.png",
