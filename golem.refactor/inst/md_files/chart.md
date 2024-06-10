@@ -23,5 +23,5 @@ We can interpret it as follows:
 
 - The most important feature was the **"yearBuilt"** variable, specifically the fact that the home was built after 1988. In the case of this observation, this variable had a positive impact on the model output value (it increased the predicted sale price).
 - The second-most important feature was the **"city"** variable, specifically the fact that the home was located in Vernon, Connecticut. In the case of this observation, this variable had a negative impact on the model output value (it decreased the predicted sale price).
-- The third-most important feature was the "finishedSqFt" variable, specifically the fact that the home had square footage between 1,750 and 2,244. In the case of this observation, this variable had a negative impact on the model output value (it decreased the predicted sale price).
+- The third-most important feature was the **"finishedSqFt"** variable, specifically the fact that the home had square footage between 1,750 and 2,244. In the case of this observation, this variable had a negative impact on the model output value (it decreased the predicted sale price).
 - The linear regression model is predicting a sale price of $259,708.
