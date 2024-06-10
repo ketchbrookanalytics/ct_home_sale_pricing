@@ -18,6 +18,7 @@ Imports:
     golem (>= 0.4.1),
     lime,
     lubridate,
+    markdown,
     parsnip,
     quantmod,
     scales,
