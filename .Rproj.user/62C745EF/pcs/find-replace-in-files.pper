@@ -1,6 +1,6 @@
 {
     "dialog-state": {
-        "query": "RDS",
+        "query": "generate_lime_chart",
         "path": "",
         "regex": false,
         "caseSensitive": false,
@@ -9,7 +9,7 @@
         "useGitGrep": true,
         "excludeGitIgnore": true,
         "excludeFilePatterns": [],
-        "resultsCount": 30,
+        "resultsCount": 0,
         "errorCount": 0,
         "replaceErrors": "",
         "projectRelative": true
