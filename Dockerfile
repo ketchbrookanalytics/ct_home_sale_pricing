@@ -16,5 +16,3 @@ RUN R -e 'install.packages("httpgd")'
 
 # Once installed, remove the temporary directory
 RUN rm -rf /build_zone
-# EXPOSE 3838
-# CMD R -e "options('shiny.port'=3838,shiny.host='0.0.0.0');library(iDEP);iDEP::run_app()"
