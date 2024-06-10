@@ -47,7 +47,7 @@ usethis::use_test("app")
 # Documentation
 
 ## Vignette ----
-usethis::use_vignette("golem.refactor")
+usethis::use_vignette("ct.home.sale.pricing")
 devtools::build_vignettes()
 
 ## Code Coverage----

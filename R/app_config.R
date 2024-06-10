@@ -9,7 +9,7 @@
 #'
 #' @noRd
 app_sys <- function(...) {
-  system.file(..., package = "golem.refactor")
+  system.file(..., package = "ct.home.sale.pricing")
 }
 
 

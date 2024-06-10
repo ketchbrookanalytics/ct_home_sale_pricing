@@ -1,9 +1,9 @@
-Package: golem.refactor
-Title: An Amazing Shiny App
+Package: ct.home.sale.pricing
+Title: Home Sale Price Estimator for Tolland County (Connecticut)
 Version: 0.0.0.9000
 Authors@R: 
     person("firstname", "lastname", , "your@email.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
+Description: Use data on historical home sale prices in Tolland County, Connecticut and two modeling techniques (linear regression, xgboost) to predict the sale price of a home sold today given parameter values entered by the user.
 License: What license is it under?
 Depends: 
     R (>= 2.10)
