@@ -10,10 +10,11 @@ app_ui <- function(request) {
     golem_add_external_resources(),
     # Your application UI logic
     bslib::page_navbar(
-      title = shiny::a(
-        "Ketchbrook Analytics",
-        href = "https://www.ketchbrookanalytics.com/", 
-        target = "_blank"
+      bslib::nav_item(
+        shiny::img(
+          src = "www/ketchbrook_logo.png",
+          width = 150
+        )
       ),
       bslib::nav_panel(
         title = "App",
