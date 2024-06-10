@@ -10,6 +10,7 @@ app_ui <- function(request) {
     golem_add_external_resources(),
     # Your application UI logic
     bslib::page_navbar(
+      id = "app_navbar",
       theme = bslib::bs_theme(
         bootswatch = "sandstone",
         fg = "#000000",
